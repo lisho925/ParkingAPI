@@ -1,0 +1,135 @@
+CREATE DATABASE parkingbd;
+USE parkingbd ;
+
+CREATE TABLE roles (
+  idroles INT NOT NULL AUTO_INCREMENT,
+  nombre_rol VARCHAR(45) NOT NULL,
+  PRIMARY KEY (idroles)
+);
+
+
+CREATE TABLE usuarios (
+  idusuario INT NOT NULL,
+  nombre CHAR(45) NOT NULL,
+  apellidos VARCHAR(45) NOT NULL,
+  telefono VARCHAR(45) NOT NULL,
+  direccion VARCHAR(45) NOT NULL,
+  tipo_usuario INT NOT NULL,
+  user VARCHAR(45) NOT NULL,
+  password VARCHAR(45) NOT NULL,
+  PRIMARY KEY (idusuario),
+  
+  CONSTRAINT tipo_usuario_roles_FK
+    FOREIGN KEY (tipo_usuario)
+    REFERENCES roles (idroles)
+);
+
+
+CREATE TABLE zonas (
+  idzonas INT NOT NULL AUTO_INCREMENT,
+  nombre_zona VARCHAR(45) NOT NULL,
+  capacidad INT NOT NULL,
+  ocupacion INT NULL,
+  PRIMARY KEY (idzonas)
+);
+
+
+CREATE TABLE tipos_vehiculo (
+  idvehiculo INT NOT NULL AUTO_INCREMENT,
+  tipo_vehiculo VARCHAR(45) NOT NULL,
+  PRIMARY KEY (idvehiculo)
+);
+
+
+CREATE TABLE tarifas (
+  idtarifas INT NOT NULL AUTO_INCREMENT,
+  tipovehiculo_tarifas INT NOT NULL,
+  periodo VARCHAR(45) NOT NULL,
+  tarifa INT NOT NULL,
+  PRIMARY KEY (idtarifas),
+  
+  CONSTRAINT tipovehiculo_tarifas_tipos_vehiculo_FK
+    FOREIGN KEY (tipovehiculo_tarifas)
+    REFERENCES tipos_vehiculo (idvehiculo)
+);
+
+
+CREATE TABLE formas_pago (
+  idformas_pago INT NOT NULL AUTO_INCREMENT,
+  forma_pago VARCHAR(45) NOT NULL,
+  PRIMARY KEY (idformas_pago)
+);
+
+
+CREATE TABLE registros (
+  idregistro INT NOT NULL AUTO_INCREMENT,
+  placa VARCHAR(10) NOT NULL,
+  horaingreso VARCHAR(45) NOT NULL,
+  tipovehiculo_registro INT NOT NULL,
+  zona INT NOT NULL,
+  horasalida VARCHAR(45) NULL,
+  valor INT NULL,
+  tipopago_registro INT NULL,
+  usuario_registro INT NOT NULL,
+  PRIMARY KEY (idregistro),
+
+  CONSTRAINT usuario_registro_usuarios_FK
+    FOREIGN KEY (usuario_registro)
+    REFERENCES usuarios (idusuario),
+
+  CONSTRAINT zona_zonas_FK
+    FOREIGN KEY (zona)
+    REFERENCES zonas (idzonas),
+
+  CONSTRAINT tipovehiculo_registro_tipos_vehiculo_FK
+    FOREIGN KEY (tipovehiculo_registro)
+    REFERENCES tipos_vehiculo (idvehiculo),
+
+  CONSTRAINT tipopago_registro_formas_pago_FK
+    FOREIGN KEY (tipopago_registro)
+    REFERENCES formas_pago (idformas_pago)
+);
+
+
+CREATE TABLE clientes (
+  idcliente INT NOT NULL,
+  placa_cliente VARCHAR(10) NOT NULL,
+  tipovehiculo_cliente INT NOT NULL,
+  tarifa_cliente INT NOT NULL,
+  nombre_cliente VARCHAR(45) NOT NULL,
+  PRIMARY KEY (idcliente),
+  
+  CONSTRAINT tipovehiculo_cliente_tipos_vehiculo_FK
+    FOREIGN KEY (tipovehiculo_cliente)
+    REFERENCES tipos_vehiculo (idvehiculo)
+);
+
+
+
+
+INSERT INTO parkingbd.roles (nombre_rol) VALUES ('Administrador');
+INSERT INTO parkingbd.roles (nombre_rol) VALUES ('Operario');
+
+INSERT INTO parkingbd.formas_pago (forma_pago) VALUES ('CONTADO');
+INSERT INTO parkingbd.formas_pago (forma_pago) VALUES ('CREDITO');
+
+INSERT INTO parkingbd.tipos_vehiculo (tipo_vehiculo) VALUES ('AUTOMOVIL');
+INSERT INTO parkingbd.tipos_vehiculo (tipo_vehiculo) VALUES ('MOTO');
+INSERT INTO parkingbd.tipos_vehiculo (tipo_vehiculo) VALUES ('CAMION');
+
+INSERT INTO parkingbd.zonas (nombre_zona, capacidad, ocupacion) VALUES ('Piso1 Automovil', '45', '0');
+INSERT INTO parkingbd.zonas (nombre_zona, capacidad, ocupacion) VALUES ('Piso1 Motos', '60', '0');
+INSERT INTO parkingbd.zonas (nombre_zona, capacidad, ocupacion) VALUES ('Piso1 Camiones', '16', '0');
+INSERT INTO parkingbd.zonas (nombre_zona, capacidad, ocupacion) VALUES ('Piso2 Automovil', '40', '0');
+
+INSERT INTO parkingbd.tarifas (tipovehiculo_tarifas, periodo, tarifa) VALUES ('1', 'Hora', '3500');
+INSERT INTO parkingbd.tarifas (tipovehiculo_tarifas, periodo, tarifa) VALUES ('2', 'Hora', '1500');
+INSERT INTO parkingbd.tarifas (tipovehiculo_tarifas, periodo, tarifa) VALUES ('3', 'Hor', '4000');
+
+INSERT INTO parkingbd.usuarios (idusuario, nombre, apellidos, telefono, direccion, tipo_usuario, user, password) VALUES ('70250789', 'JUAN', 'ZAPATA', '321546591', 'CALLE 55', '1', 'admin', '123');
+
+INSERT INTO parkingbd.clientes (idcliente, placa_cliente, tipovehiculo_cliente, tarifa_cliente, nombre_cliente) VALUES ('15489212', 'EWQ542', '1', '50000', 'FERNANDO FERNANDEZ');
+
+INSERT INTO parkingbd.REGISTROS (placa, horaingreso, tipovehiculo_registro, zona, usuario_registro) VALUES ('ASD455', '2021-04-28 12:14:00', '1', '1', '70250789');
+
+
